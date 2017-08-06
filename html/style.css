@@ -52,7 +52,7 @@ p {
     float: left;
     display: inline-block;
     line-height: 40px;
-    padding-left: 20px;
+    padding: 0 20px;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 16px;
