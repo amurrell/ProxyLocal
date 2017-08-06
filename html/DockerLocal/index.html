@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<title>Proxy Local</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon/apple-touch-icon-57x57.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon/apple-touch-icon-114x114.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon/apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon/apple-touch-icon-144x144.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="favicon/apple-touch-icon-60x60.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicon/apple-touch-icon-120x120.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="favicon/apple-touch-icon-76x76.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicon/apple-touch-icon-152x152.png" />
+	<link rel="icon" type="image/png" href="favicon/favicon-196x196.png" sizes="196x196" />
+	<link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16" />
+	<link rel="icon" type="image/png" href="favicon/favicon-128.png" sizes="128x128" />
+	<meta name="application-name" content="favicon/&nbsp;"/>
+	<meta name="msapplication-TileColor" content="favicon/#FFFFFF" />
+	<meta name="msapplication-TileImage" content="favicon/mstile-144x144.png" />
+	<meta name="msapplication-square70x70logo" content="favicon/mstile-70x70.png" />
+	<meta name="msapplication-square150x150logo" content="favicon/mstile-150x150.png" />
+	<meta name="msapplication-wide310x150logo" content="favicon/mstile-310x150.png" />
+	<meta name="msapplication-square310x310logo" content="favicon/mstile-310x310.png" />
+
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet" type="text/css">
+	<link href="../style.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+	<div class="nav clearfix">
+	    <a href="http://localhost">
+		<span class="fa fa-random"></span>
+		ProxyLocal
+	    </a>
+	    <div class="container">
+		<ul>
+		    <li>
+			<a href="http://docker.example.com">
+			    <span class="fa fa-angle-right"></span>
+			    docker.example.com
+			</a>
+		    </li>
+		    <li>
+			<a href="/DockerLocal" class="active">
+			    <span class="fa fa-angle-right"></span>
+			    DockerLocal
+			</a>
+		    </li>
+		</ul>
+	    </div>
+	</div>
+	<div class="container">
+
+
+	    <h2>
+		DockerLocal
+	    </h2>
+
+	    <p>DockerLocal is used for setting up a site to be served on localhost:PORT</p>
+
+	    <p>It runs on docker containers running nginx + php7.0-fpm, memcached, mysql and your project's web application files.</p>
+
+	    <hr/>
+
+	    <p>Git clone DockerLocal into your other site repositories to start up sites on particular ports.</p>
+
+	    <div class="well clearfix">
+		<h3>1) Start up a Site</h3>
+
+		<p>
+		    Clone the repo for your desired site.
+		    Then git clone this the DockerLocal project into its root directory.
+		</p>
+
+		<p>
+		    These DockerLocal commands are to be run within your SITE's repo,
+		    so that it can connect the correct, corresponding site files.
+		</p>
+
+		<ul>
+		    <li>
+			<code>cd DockerLocal/commands/</code>
+		    </li>
+		    <li>
+			<code>./site-up -n=docker.YOURSITE.com -s=../path/to/ProxyLocal/</code> if you have a match in ProxyLocal sites.yml, or
+			<br/>
+			<code>./site-up -p=8080 -n=yourprojectname</code> if you do not.
+		    </li>
+		    <li>
+			Go to the url...
+		    </li>
+		    <li>
+			<code>./site-down -n=docker.YOURSITE.com</code> when you are done, or <br>
+			<code>./site-down -n=yourprojectname</code>
+		    </li>
+		</ul>
+
+		<h3>2) If needed, setup your data connections</h3>
+
+		<div class="well col-xs-6">
+		    <h4>Set up databases.yml</h4>
+
+		    <ul>
+			<li>
+			    <strong>Copy</strong> databases-example.yml to new file databases.yml
+			</li>
+			<li>
+			    Follow the pattern to add mysql database credentials per site
+			</li>
+		    </ul>
+		</div>
+
+		<div class="well col-xs-6">
+		    <h4>Get/Refresh a site's database</h4>
+
+		    <ul>
+			<li>
+			    <code>cd DockerLocal/commands/</code>
+			</li>
+			<li>
+			    <code>./site-db -n=docker.YOURSITE.com</code>
+			</li>
+		    </ul>
+		</div>
+
+		<h3>3) Checking logs, adjusting configurations as needed</h3>
+
+		<div class="well col-xs-6">
+		    <h4>Logs</h4>
+
+		    <ul>
+			<li>
+			    Check <strong>DockerLocal/logs/</strong> for log files, php_error_log.log etc.
+			    <br>
+			    Make sure to have an "access.log" file in here if you have any nginx start up issues.
+			</li>
+		    </ul>
+		</div>
+
+		<div class="well col-xs-6">
+		    <h4>Custom Configurations</h4>
+
+		    <ul>
+			<li>
+			    Check your <strong>nginx.site.conf</strong> root path to ensure it is correctly pointing to your index.php file.
+			</li>
+			<li>
+			    Check your <strong>php-fpm.site.conf</strong> for any adjustments needed for php/memcached etc.
+			</li>
+			<li>
+			    Check your <strong>DockerLocal/data/custom/options.cnf</strong> for any adjustments needed for mysql.
+			</li>
+		    </ul>
+		</div>
+	    </div>
+
+	</div>
+    </body>
+</html>

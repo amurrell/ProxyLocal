@@ -1,0 +1,7 @@
+proxy:
+    build: .
+    ports:
+        - "80:80"
+    volumes:
+        - ../:/var/www/site
+    net: host

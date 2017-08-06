@@ -1,0 +1,89 @@
+body {
+    background: #efefef;
+}
+
+.well {
+    background: #fff;
+    border: none;
+    box-shadow: 0 0 0 0 inset, 5px 5px 5px -5px #ddd;
+    border-radius: 0;
+    margin: 10px auto 50px;
+    padding: 40px 30px;
+}
+
+.well .well {
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    min-height: 300px;
+}
+
+code {
+    background: #eee;
+    border-radius: 0;
+    padding: 5px;
+    margin-bottom: 2px;
+    display: inline-block;
+    color: #333;
+}
+
+h1, h2, h3, h4 {
+    color: #ff2151;
+}
+
+h4 {
+    color: #333;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+p {
+    margin: 30px auto;
+}
+
+.nav {
+    background: #ff2151;
+    color: #fff;
+    margin-bottom: 40px;
+}
+
+.nav a {
+    color: #fff;
+    float: left;
+    display: inline-block;
+    line-height: 40px;
+    padding-left: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: "Ubuntu Condensed";
+}
+
+.nav ul {
+   list-style-type: none;
+   float: left;
+   padding: 0;
+   margin: 0;
+   line-height: 0;
+}
+
+.nav ul li {
+    display: inline-block;
+}
+
+.nav ul li a {
+    padding: 0px 20px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-family: "Ubuntu Condensed";
+}
+
+.nav ul li a:hover, .nav ul li a.active {
+    background: #cc2143;
+    text-decoration: none;
+}
+
+hr {
+    border-top: 1px solid #ddd;
+}

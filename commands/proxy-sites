@@ -1,0 +1,74 @@
+#!/bin/bash
+
+SITE_FILE="../sites.yml"
+if [ ! -f $SITE_FILE ]; then
+    printf "You should create a sites.yml file (copy sites-example.yml)\nUsing sites-example.yml now:\n"
+    SITE_FILE="../sites-example.yml"
+fi
+
+
+declare -A SITES
+parse_yaml() {
+   local prefix=$2
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
+   awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+	 printf("%s[%s]=\"%s\"\n", "SITES", $2, $3);
+      }
+   }'
+}
+
+eval $(parse_yaml $SITE_FILE)
+
+# process arguments "$1", "$2", ... (i.e. "$@")
+while getopts ":hpg" opt; do
+    case $opt in
+    h) HOSTS=true ;; # Handle -h
+    p) PORTS=true ;; # Handle -p argument
+    g) GEN=true ;; # Handle -g argument
+    \?) ERROR=true;; # Handle error: unknown option or missing required argument.
+    esac
+done
+
+if [ $# -eq 0 ]; then
+    echo "./proxy-sites [-h hosts] [-p ports] [-g generate nginx confs]"
+    exit 1
+fi
+
+if [ "$GEN" ]; then
+    for i in "${!SITES[@]}"
+    do
+      [ $i -eq 80 ] && continue
+      rm -f ../nginx-sites/nginx.${SITES[$i]}.conf
+      touch ../nginx-sites/nginx.${SITES[$i]}.conf
+      cat ../nginx.site.conf > ../nginx-sites/nginx.${SITES[$i]}.conf
+
+      sed -i "/server_name .*/c\    server_name ${SITES[$i]};" ../nginx-sites/nginx.${SITES[$i]}.conf
+      sed -i "/proxy_pass .*/c\        proxy_pass http:\/\/127.0.0.1:$i;" ../nginx-sites/nginx.${SITES[$i]}.conf
+    done
+    echo "updated /nginx-sites/; maybe build again.. ./proxy-up"
+    exit 1
+fi
+
+
+if [ "$HOSTS" ]; then
+    for i in "${!SITES[@]}"
+    do
+      echo "127.0.0.1	${SITES[$i]}"
+    done
+fi
+
+if [ "$PORTS" ]; then
+    for i in "${!SITES[@]}"
+    do
+      echo "localhost:$i   ${SITES[$i]}"
+    done
+fi
+
+

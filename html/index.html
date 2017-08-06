@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<title>Proxy Local</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicon/apple-touch-icon-57x57.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicon/apple-touch-icon-114x114.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicon/apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicon/apple-touch-icon-144x144.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="favicon/apple-touch-icon-60x60.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicon/apple-touch-icon-120x120.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="favicon/apple-touch-icon-76x76.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicon/apple-touch-icon-152x152.png" />
+	<link rel="icon" type="image/png" href="favicon/favicon-196x196.png" sizes="196x196" />
+	<link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16" />
+	<link rel="icon" type="image/png" href="favicon/favicon-128.png" sizes="128x128" />
+	<meta name="application-name" content="favicon/&nbsp;"/>
+	<meta name="msapplication-TileColor" content="favicon/#FFFFFF" />
+	<meta name="msapplication-TileImage" content="favicon/mstile-144x144.png" />
+	<meta name="msapplication-square70x70logo" content="favicon/mstile-70x70.png" />
+	<meta name="msapplication-square150x150logo" content="favicon/mstile-150x150.png" />
+	<meta name="msapplication-wide310x150logo" content="favicon/mstile-310x150.png" />
+	<meta name="msapplication-square310x310logo" content="favicon/mstile-310x310.png" />
+
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet" type="text/css">
+	<link href="style.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+	<div class="nav clearfix">
+	    <a href="http://localhost">
+		<span class="fa fa-random"></span>
+		ProxyLocal
+	    </a>
+	    <div class="container">
+		<ul>
+		    <li>
+			<a href="http://docker.example.com" class="active">
+			    <span class="fa fa-angle-right"></span>
+			    docker.example.com
+			</a>
+		    </li>
+		    <li>
+			<a href="/DockerLocal">
+			    <span class="fa fa-angle-right"></span>
+			    DockerLocal
+			</a>
+		    </li>
+		</ul>
+	    </div>
+	</div>
+	<div class="container">
+
+	    <h1>ProxyLocal</h2>
+
+	    <p>
+		ProxyLocal creates a reverse-proxy to allow you to use domains
+		with any projects you have running on localhost:PORT
+	    </p>
+
+	    <p>
+		ProxyLocal creates an nginx docker container that runs on port 80,
+		so you'll need to stop any services running on port 80 on your host machine.
+	    </p>
+
+	    <hr>
+
+	    <div class="well">
+		<h3>1) Add sites to sites.yml</h3>
+		<p>
+		    Need to add your projects to the sites.yml for port to domain mappings
+		</p>
+
+		<ul>
+		    <li>
+			<strong>Copy</strong> sites-example.yml
+		    </li>
+		    <li>
+			<strong>Edit</strong> the file to reflect your domains and their ports.
+			<br>
+			ie: <code>80: docker.example.com</code>
+		    </li>
+		    <li>
+			<code>cd /commands/</code>
+		    </li>
+		    <li>
+			<code>./proxy-sites -g</code> to generate nginx confs based on these sites.
+		    </li>
+		    <li>
+			To view your ports for fun, <code>./proxy-sites -p</code>
+		    </li>
+		</ul>
+	    </div>
+
+
+	    <div class="well">
+		<h3>2) Edit Hosts File</h3>
+		<p>
+		    Next, need to add those sites from step 1 to your <strong>/etc/hosts</strong> to override DNS to point to your localhost.
+		</p>
+
+		<ul>
+		    <li>
+			<code>cd /commands/</code>
+		    </li>
+		    <li>
+			<code>./proxy-sites -h</code>
+		    </li>
+		    <li>
+			<strong>Copy</strong> the output to <strong>/etc/hosts</strong> file
+		    </li>
+		</ul>
+	    </div>
+
+	    <div class="well">
+		<h3>3) Build the proxy again, go to the site!</h3>
+
+		<ul>
+		    <li>
+			<code>cd /commands/</code>
+		    </li>
+		    <li>
+			<code>./proxy-up</code> to start the proxy
+		    </li>
+		    <li>
+			Go to your site
+		    </li>
+		    <li>
+			Without the proxy running, you should be able to view your other projects at localhost:port
+		    </li>
+		    <li>
+			<code>./proxy-down</code> to shut down the proxy
+		    </li>
+		</ul>
+	    </div>
+	</div>
+    </body>
+</html>
