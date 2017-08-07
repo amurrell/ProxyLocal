@@ -65,42 +65,114 @@
 
 	    <p>It runs on docker containers running nginx + php7.0-fpm, memcached, mysql and your project's web application files.</p>
 
-	    <hr/>
+            <hr/>
+            
+            <h3>1) Start up a Site</h3>
+            
+	    <p>
+                Git clone the <a href="https://github.com/amurrell/DockerLocal" target="_blank">DockerLocal</a> project into your site repo's root directory, on your host machine.
+            </p>
 
-	    <p>Git clone DockerLocal into your other site repositories to start up sites on particular ports.</p>
+            <p>
+                Go to the commands folder: <code>cd DockerLocal/commands/</code>
+            </p>
+            
+            <div class="well clearfix">
 
-	    <div class="well clearfix">
-		<h3>1) Start up a Site</h3>
+                <h3><span class="fa fa-angle-right"></span> Run just one site (quick & easy) - localhost:port</h3>
 
-		<p>
-		    Clone the repo for your desired site.
-		    Then git clone this the DockerLocal project into its root directory.
-		</p>
-
-		<p>
-		    These DockerLocal commands are to be run within your SITE's repo,
-		    so that it can connect the correct, corresponding site files.
-		</p>
-
-		<ul>
+                <ul>
+                    <li>
+                        <code>./site-up</code> to run on default port 3000
+                    </li>
+                    <li>
+                        Go to <a href="http://localhost:3000">localhost:3000</a> in your browser
+                    </li>
+                    <li>
+                        <code>./site-down</code> when you are done, or <br>
+                    </li>
+                </ul>
+                
+            </div>
+                
+            <div class="well clearfix">
+                <h3><span class="fa fa-angle-right"></span> Run many sites - with just DockerLocal - localhost:port</h3>
+                
+                <p>Ran many instances of DockerLocal, just <strong>specify a port</strong></p>
+                
+                <ul>
 		    <li>
-			<code>cd DockerLocal/commands/</code>
+			<code>./site-up -p=8080</code> to choose a port
 		    </li>
 		    <li>
-			<code>./site-up -n=docker.YOURSITE.com -s=../path/to/ProxyLocal/sites.yml</code> if you have a match in ProxyLocal sites.yml, or
-			<br/>
-			<code>./site-up -p=8080 -n=yourprojectname</code> if you do not.
+			Go to <a href="http://localhost:8080">localhost:8080</a> in your browser
 		    </li>
 		    <li>
-			Go to the url...
-		    </li>
-		    <li>
-			<code>./site-down -n=docker.YOURSITE.com</code> when you are done, or <br>
-			<code>./site-down -n=yourprojectname</code>
+			<code>./site-down -p=8080</code> to shut down the instance on this port
 		    </li>
 		</ul>
-
-		<h3>2) If needed, setup your data connections</h3>
+                
+            </div>
+                
+            <div class="well clearfix">
+                <h3><span class="fa fa-angle-right"></span> Run many sites - using ProxyLocal domain (and specified ports!)</h3>
+                
+                <p>
+                    Make sure <a href="https://github.com/amurrell/ProxyLocal" target="_blank">ProxyLocal</a> is up and <a href="http://localhost" target="_blank">running</a>,
+                    and you've recently ran <strong>./proxy-up</strong> since editing your <strong>sites.yml</strong>
+                </p>
+                
+                <ul>
+		    <li>
+			<code>./site-up -n=docker.yoursite.com -s=~</code> uses sites.yml* to determine the correct port.
+		    </li>
+		    <li>
+			Go to docker.yoursite.com in your browser
+		    </li>
+		    <li>
+			<code>./site-down -n=docker.yoursite.com -s=~</code> when you are done**
+		    </li>
+		</ul>
+                
+                <hr/>
+                
+                <p>
+                    *The default path <code>../../../ProxyLocal/sites.yml</code> is indicated with <code>s=~</code>, but you can specify your own location.
+                </p>
+                
+                <p>
+                    ** For faster site-down action, you can reuse you site-up command (tap up to scroll through your cmd history)<br>
+                    Append -d=true: <code>./site-up -n=docker.yoursite.com -s=~ -d=true</code>
+                </p>
+                
+            </div>
+            
+            <h3>2) Share your site, with ngrok!</h3>
+            
+            <p>REQUIRES ngrok, so go download it... symlink it to your /usr/bin/local</p>
+            <p>
+                All the following would work, depending on which approach you used above:
+            </p>
+            
+            <div class="well clearfix">
+                
+                <ul>
+                    <li>
+                        <code>./site-ngrok</code> (3000)
+                    </li>
+                    <li>
+                        <code>./site-ngrok -p=8080</code>
+                    </li>
+                    <li>
+                        <code>./site-ngrok -n=docker.yoursite.com -s=~</code> (will be determined by mapping in sites.yml)
+                    </li>
+                </ul>
+                
+            </div>
+            
+            <h3>3) If needed, setup your data connections</h3>
+            
+            <div class="well clearfix">
 
 		<div class="well col-xs-6">
 		    <h4>Set up databases.yml</h4>
@@ -127,8 +199,14 @@
 			</li>
 		    </ul>
 		</div>
-
-		<h3>3) Checking logs, adjusting configurations as needed</h3>
+                
+            </div>
+            
+            <h3>4) Checking logs, adjusting configurations as needed</h3>
+            
+            <p><strong>./site-up</strong> will safely stop and rebuild your containers, so feel free to re-run it after changing configurations.</p>
+            
+            <div class="well clearfix">
 
 		<div class="well col-xs-6">
 		    <h4>Logs</h4>

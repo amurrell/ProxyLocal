@@ -1,5 +1,8 @@
 #!/bin/bash
 
+./proxy-sites -g
+sudo ./proxy-sites -h
+
 sudo docker-compose -p proxylocal down;
 sudo docker-compose build;
 sudo docker-compose -p proxylocal up -d;

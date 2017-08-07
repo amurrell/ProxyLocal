@@ -86,37 +86,11 @@
 			<br>
 			ie: <code>80: docker.example.com</code>
 		    </li>
-		    <li>
-			<code>cd /commands/</code>
-		    </li>
-		    <li>
-			<code>./proxy-sites -g</code> to generate nginx confs based on these sites.
-		    </li>
-		    <li>
-			To view your ports for fun, <code>./proxy-sites -p</code>
-		    </li>
-		</ul>
-	    </div>
-
-
-	    <div class="well">
-		<h3>2) Update/Edit Hosts File</h3>
-		<p>
-		    Whenever you add or edit sites.yml, you'll need to update <strong>/etc/hosts</strong> to override DNS to point to your localhost.
-		</p>
-
-		<ul>
-		    <li>
-			<code>cd /commands/</code>
-		    </li>
-		    <li>
-			<code>sudo ./proxy-sites -h</code> (you must run with root to have it edit the /etc/hosts file)
-		    </li>
 		</ul>
 	    </div>
 
 	    <div class="well">
-		<h3>3) Build the proxy again, go to the site!</h3>
+		<h3>2) Build the proxy again (and always after editing the sites.yml). Go to the site!</h3>
 
 		<ul>
 		    <li>
