@@ -100,9 +100,9 @@
 
 
 	    <div class="well">
-		<h3>2) Edit Hosts File</h3>
+		<h3>2) Update/Edit Hosts File</h3>
 		<p>
-		    Next, need to add those sites from step 1 to your <strong>/etc/hosts</strong> to override DNS to point to your localhost.
+		    Whenever you add or edit sites.yml, you'll need to update <strong>/etc/hosts</strong> to override DNS to point to your localhost.
 		</p>
 
 		<ul>
@@ -110,10 +110,7 @@
 			<code>cd /commands/</code>
 		    </li>
 		    <li>
-			<code>./proxy-sites -h</code>
-		    </li>
-		    <li>
-			<strong>Copy</strong> the output to <strong>/etc/hosts</strong> file
+			<code>sudo ./proxy-sites -h</code> (you must run with root to have it edit the /etc/hosts file)
 		    </li>
 		</ul>
 	    </div>

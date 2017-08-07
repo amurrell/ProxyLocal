@@ -56,12 +56,32 @@ if [ "$GEN" ]; then
     exit 1
 fi
 
+if [ "$HOSTS" ] && [ ! $(whoami) == "root" ]; then
+    echo "Need to run as root to edit hosts file: sudo ./proxy-sites -h"
+    exit 1
+fi
 
 if [ "$HOSTS" ]; then
+    HOSTS_FILE="/etc/hosts"
+    START=$(echo "# PROXYLOCAL START")
+    END=$(echo "# PROXYLOCAL END")
+    
+    # delete first
+    sudo sed -i "/${START}/,/${END}/d" "${HOSTS_FILE}"
+
+    # make sure hosts file has new line at end of file
+    echo "${HOSTS_FILE}" | while read f; do tail -n1 $f | read -r _ || echo >> $f; done
+
+    # make the lines
+    CONF="${START}\n"
     for i in "${!SITES[@]}"
     do
-      echo "127.0.0.1	${SITES[$i]}"
+      CONF="${CONF}$(printf "127.0.0.1     ${SITES[$i]}\n")\n"
     done
+    CONF="${CONF}${END}"
+
+    # add to hosts
+    sudo printf "${CONF}" >> "${HOSTS_FILE}"
 fi
 
 if [ "$PORTS" ]; then
@@ -70,5 +90,3 @@ if [ "$PORTS" ]; then
       echo "localhost:$i   ${SITES[$i]}"
     done
 fi
-
-
