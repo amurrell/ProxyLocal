@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SITE_FILE="../sites.yml"
 if [ ! -f $SITE_FILE ]; then
@@ -65,7 +65,7 @@ if [ "$HOSTS" ]; then
     HOSTS_FILE="/etc/hosts"
     START=$(echo "# PROXYLOCAL START")
     END=$(echo "# PROXYLOCAL END")
-    
+
     # delete first
     sudo sed -i "/${START}/,/${END}/d" "${HOSTS_FILE}"
 
