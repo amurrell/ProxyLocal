@@ -49,8 +49,8 @@ if [ "$GEN" ]; then
       touch ../nginx-sites/nginx.${SITES[$i]}.conf
       cat ../nginx.site.conf > ../nginx-sites/nginx.${SITES[$i]}.conf
 
-      sed -i "/server_name .*/c\    server_name ${SITES[$i]};" ../nginx-sites/nginx.${SITES[$i]}.conf
-      sed -i "/proxy_pass .*/c\        proxy_pass http:\/\/127.0.0.1:$i;" ../nginx-sites/nginx.${SITES[$i]}.conf
+      sed -i'' -e "/server_name .*/c\    server_name ${SITES[$i]};" ../nginx-sites/nginx.${SITES[$i]}.conf
+      sed -i'' -e "/proxy_pass .*/c\        proxy_pass http:\/\/127.0.0.1:$i;" ../nginx-sites/nginx.${SITES[$i]}.conf
     done
     echo "updated /nginx-sites/; maybe build again.. ./proxy-up"
     exit 1
@@ -67,7 +67,7 @@ if [ "$HOSTS" ]; then
     END=$(echo "# PROXYLOCAL END")
 
     # delete first
-    sudo sed -i "/${START}/,/${END}/d" "${HOSTS_FILE}"
+    sudo sed -i'' -e "/${START}/,/${END}/d" "${HOSTS_FILE}"
 
     # make sure hosts file has new line at end of file
     echo "${HOSTS_FILE}" | while read f; do tail -n1 $f | read -r _ || echo >> $f; done
