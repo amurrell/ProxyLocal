@@ -1,7 +1,11 @@
-proxy:
-    build: .
-    ports:
-        - "80:80"
-    volumes:
-        - ../:/var/www/site
-    net: host
+version: '2'
+services:
+    proxy:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        volumes:
+            - ../:/var/www/site
+        ports:
+            - "0.0.0.0:80:80"
+        network_mode: "host"
