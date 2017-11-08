@@ -51,8 +51,9 @@ if [ "$GEN" ]; then
       touch $NGINX_FILE
       cat ../nginx.site.conf > $NGINX_FILE
 
-      sed -i'' "s/SITE/${SITES[$i]}/g;" $NGINX_FILE
-      sed -i'' "s/PORT/$i/g;" $NGINX_FILE
+      sed -i'.bak' "s/SITE/${SITES[$i]}/g;" $NGINX_FILE
+      sed -i'.bak' "s/PORT/$i/g;" $NGINX_FILE
+      rm "${NGINX_FILE}.bak"
     done
     echo "updated /nginx-sites/; maybe build again.. ./proxy-up"
     exit 1
