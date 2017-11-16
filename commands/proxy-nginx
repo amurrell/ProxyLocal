@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Defaults
+UP=1
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+PROXY_PATH="${PARENT_PATH/commands/}"
+PROXY_SITES_PATH="${PROXY_PATH}sites.yml"
+
+# P switch for port
+P=$(sed -e 's#.*\-p=\([^\-]*\).*#\1#' <<< "$1$2")
+# D switch for "site down"
+D=$(sed -e 's#.*\-d=\([^\-]*\).*#\1#' <<< "$1$2")
+
+if [ "$P" == "" ]; then 
+    printf "Must specify a port: ./proxy-nginx -p=3000\n"
+    exit
+fi
+
+if [ ! "$P" == "$1$2" ]; then
+    WEB_PORT=$P
+fi
+
+if [ ! "$D" == "$1$2" ]; then
+    UP=0
+fi
+
+SITE=$(eval cat $PROXY_SITES_PATH | awk "/${WEB_PORT}:/"' { print $2 }')
+
+if [ "$SITE" == '' ]; then
+    printf "${WEB_PORT} was not found in ProxyLocal/sites.yml\n";
+    exit;
+fi
+
+CONF="nginx.${SITE}.conf"
+NGINX_COMMAND="ln -s /etc/nginx/sites-available/${CONF} /etc/nginx/sites-enabled/"
+
+if [ "$UP" = 0 ]; then
+    NGINX_COMMAND="rm -f /etc/nginx/sites-enabled/${CONF}"
+fi
+
+printf "${NGINX_COMMAND}\n"
+sudo docker exec proxylocal_proxy_1 bash -c "${NGINX_COMMAND} && service nginx reload"

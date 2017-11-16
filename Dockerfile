@@ -32,8 +32,8 @@ ADD nginx.proxy.conf /etc/nginx/sites-available/
 RUN rm /etc/nginx/sites-enabled/default
 RUN rm /etc/nginx/sites-available/default
 
-# Make Symbolic link to enable the site
-RUN ln -s /etc/nginx/sites-available/* /etc/nginx/sites-enabled/
+# Make Symbolic link to enable the docker example site
+RUN ln -s /etc/nginx/sites-available/nginx.proxy.conf /etc/nginx/sites-enabled/
 
 # Append "daemon off;" to the configuration file
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
