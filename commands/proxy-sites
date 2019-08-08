@@ -79,7 +79,7 @@ if [ "$HOSTS" ]; then
     CONF="${START}\n"
     for i in "${!SITES[@]}"
     do
-      CONF="${CONF}$(printf "127.0.0.1     ${SITES[$i]}\n")\n"
+      CONF="${CONF}$(printf "127.0.0.1     ${SITES[$i]} socket.${SITES[$i]}\n")\n"
     done
     CONF="${CONF}${END}"
 
