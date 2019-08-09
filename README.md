@@ -8,6 +8,7 @@
 
 ## Requirements
 
+- Docker-compose (tested with docker-compose version 1.24.1, build 4667896b)
 - Docker-Engine
 
 Tested with: 
