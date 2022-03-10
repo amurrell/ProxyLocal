@@ -1,16 +1,16 @@
 # Set the base image to ubuntu:16.04
-FROM        ubuntu:16.04
+FROM ubuntu:20.04
 
 # File Author / Maintainer
-MAINTAINER Angela Murrell
+LABEL maintainer "Angela Murrell <me@angelamurrell.com>"
 
 # Update the repository and install nginx and php7.0
-RUN         apt-get update && \
-            apt-get install -y nano && \
-            apt-get install -y curl && \
-            apt-get install -y nginx && \
-            apt-get clean && \
-            rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+RUN apt-get update && \
+  apt-get install -y nano && \
+  apt-get install -y curl && \
+  apt-get install -y nginx && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # export var for nano to work in command line
 ENV TERM xterm
@@ -36,7 +36,8 @@ RUN rm /etc/nginx/sites-available/default
 RUN ln -s /etc/nginx/sites-available/nginx.proxy.conf /etc/nginx/sites-enabled/
 
 # Append "daemon off;" to the configuration file
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN mv /etc/nginx/nginx.conf /var/www/site/nginx-original.conf
+COPY nginx.conf /etc/nginx/
 
 # Adjust www-data
 RUN usermod -u 1000 www-data

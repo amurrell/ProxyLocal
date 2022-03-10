@@ -9,9 +9,10 @@
 ## Requirements
 
 - Docker-compose (tested with docker-compose version 1.24.1, build 4667896b)
+  - If using v2 - then need to [disable docker-compose v2, which forces - instead of _](https://stackoverflow.com/a/69519102/2100636) in container names: `docker-compose disable-v2`
 - Docker-Engine
 
-Tested with: 
+Tested with:
 
 ```
 Client: Docker Engine - Community
@@ -54,8 +55,14 @@ Great job! The reverse-proxy is running. Go to [localhost](http://localhost) for
 
 ---
 
+## Customize
+
+If you need to alter the nginx.conf, you can edit the generated file after running `./proxy-up` and just re-run it.
+
+---
+
 ## DockerLocal, ProxyLocal's sibling
 
-Run your site on a port on localhost with [DockerLocal](https://github.com/amurrell/DockerLocal). 
+Run your site on a port on localhost with [DockerLocal](https://github.com/amurrell/DockerLocal).
 
 Add the site to ProxyLocal sites.yml. Run your localhost:port sites on a domain.

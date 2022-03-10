@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+EXAMPLE_NGINX="../nginx-example.conf"
+CUSTOM_NGINX="../nginx.conf"
+
+# NGINX.CONF
+if [ ! -f "$CUSTOM_NGINX" ]; then
+    printf "Disabling site with and reloading nginx in Proxylocal.\n"
+    cp $EXAMPLE_NGINX $CUSTOM_NGINX
+fi
+
 ./proxy-sites -g
 sudo ./proxy-sites -h
 
