@@ -6,8 +6,6 @@ if [ ! -f $SITE_FILE ]; then
     SITE_FILE="../sites-example.yml"
 fi
 
-
-declare -A SITES
 parse_yaml() {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
@@ -27,21 +25,23 @@ parse_yaml() {
 eval $(parse_yaml $SITE_FILE)
 
 # process arguments "$1", "$2", ... (i.e. "$@")
-while getopts ":hpg" opt; do
+while getopts ":hpgs" opt; do
     case $opt in
     h) HOSTS=true ;; # Handle -h
     p) PORTS=true ;; # Handle -p argument
+    s) SSL=true ;; # Handle -s argument
     g) GEN=true ;; # Handle -g argument
     \?) ERROR=true;; # Handle error: unknown option or missing required argument.
     esac
 done
 
 if [ $# -eq 0 ]; then
-    echo "./proxy-sites [-h hosts] [-p ports] [-g generate nginx confs]"
+    echo "./proxy-sites [-h hosts] [-p ports] [-g generate nginx confs] [-s generate ssl certs]"
     exit 1
 fi
 
 if [ "$GEN" ]; then
+    echo "⏳ Generating nginx configuration for sites..."
     for i in "${!SITES[@]}"
     do
       [ $i -eq 80 ] && continue
@@ -49,22 +49,55 @@ if [ "$GEN" ]; then
 
       rm -f $NGINX_FILE
       touch $NGINX_FILE
-      cat ../nginx.site.conf > $NGINX_FILE
+      CONF_FILE='../nginx.site.conf'
+
+      # If the site domain starts with local, use local conf instead of site conf
+      if [[ ${SITES[$i]} == "local"* ]]; then
+        CONF_FILE='../nginx.local.conf'
+      fi
+
+      cat "${CONF_FILE}" > $NGINX_FILE
 
       sed -i'.bak' "s/SITE/${SITES[$i]}/g;" $NGINX_FILE
       sed -i'.bak' "s/PORT/$i/g;" $NGINX_FILE
       rm "${NGINX_FILE}.bak"
+
     done
-    echo "updated /nginx-sites/; maybe build again.. ./proxy-up"
+    echo "✅ updated /nginx-sites/; ./proxy-up again if you ran this via proxy-sites -n"
+    exit 1
+fi
+
+if [ "$SSL" ]; then
+    echo "⏳ Generating ssl certs for sites..."
+    for i in "${!SITES[@]}"
+    do
+      [ $i -eq 80 ] && continue
+      
+      # Now create ssl certs for each site
+      openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365 -nodes -subj "/CN=${SITES[$i]}" 2>/dev/null
+      
+      # If key file exists, change the name of it.
+      if [ -f key.pem ]; then
+        mv key.pem "../ssl-certs/${SITES[$i]}-key.pem"
+      fi
+
+      # if cert file exists, change the name of it.
+      if [ -f cert.pem ]; then
+        mv cert.pem "../ssl-certs/${SITES[$i]}-cert.pem"
+      fi
+
+    done
+    echo "✅ updated /ssl-certs/; ./proxy-up again if you ran this via proxy-sites -s"
     exit 1
 fi
 
 if [ "$HOSTS" ] && [ ! $(whoami) == "root" ]; then
-    echo "Need to run as root to edit hosts file: sudo ./proxy-sites -h"
+    echo "🟠 Need to run as root to edit hosts file: sudo ./proxy-sites -h"
     exit 1
 fi
 
 if [ "$HOSTS" ]; then
+    echo "⏳ Generating /etc/hosts edits based on sites.yml..."
     HOSTS_FILE="/etc/hosts"
     START=$(echo "# PROXYLOCAL START")
     END=$(echo "# PROXYLOCAL END")
@@ -85,6 +118,8 @@ if [ "$HOSTS" ]; then
 
     # add to hosts
     sudo printf "${CONF}" >> "${HOSTS_FILE}"
+
+    echo "✅ updated /etc/hosts/"
 fi
 
 if [ "$PORTS" ]; then

@@ -1,2 +1,3 @@
 sites:
     80: docker.example.com
+    3000: local.yoursite.com
