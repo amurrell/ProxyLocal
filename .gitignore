@@ -3,3 +3,4 @@ databases.yml
 nginx.conf
 nginx-original.conf
 ssl-certs/*
+!ssl-certs/.gitkeep
