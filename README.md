@@ -3,6 +3,7 @@
 ### **ProxyLocal** creates a reverse-proxy to allow you to use domains with any projects you have running on `localhost:<port>` 
 
 👉 [Quick Start](#quick-start-local-project-running)
+
 👉 [Lookup: Commands](#proxy-commands)
 
 ---
@@ -30,7 +31,7 @@ cp sites-example.yml sites.yml
 
 ⏳ The docker box will take a moment to load the first time, but after that, it'll be cached and load very fast 🏃‍♀️.
 
-📍 Visit your site at http://local.yoursite.com. If you want to use https://local.yoursite.com then you can - but your browser will warn you because it will be using a self-signed certificate. Click advanced, continue unsafely...
+📍 Visit your site at http://local.yoursite.com. If you want to use https://local.yoursite.com then you can - but your browser will warn you because it will be using a self-signed certificate. Click advanced, continue unsafely... (or if in chrome, type "thisisunsafe" if no option to proceed)
 
 👉 Have more projects on different ports? Want to change the url? Read how to [Customize your sites.yml](#customize)
 
@@ -52,7 +53,7 @@ For each of your **local** sites (sites running on localhost:port already), Prox
 
 💡 You copy the script for your site, adjust your package.json, and then you can `npm run proxy` to work on it.
 
-1. copy the script to same level as package.json in your project. You can rename it something simple like `proxy-up`.
+1. copy the script to same level as package.json in your project. You can rename it something simple like `proxy-up.sh`.
 
     ```
     cp ProxyLocal/npm-scripts/npm.proxy-up.local.yoursite.com.sh ~/<your-project-path>/proxy-up.sh
@@ -64,7 +65,7 @@ For each of your **local** sites (sites running on localhost:port already), Prox
 
     ```
     "scripts": {
-        "proxy": "./proxy-up && <your commands>",
+        "proxy": "./proxy-up.sh && <your commands>",
         "dev": "<your commands>"
     }
     ```
@@ -102,11 +103,11 @@ Notice that the urls start with a subdomain - either `docker` or `local`:
 
 The `nginx.conf` configuration file (located in `ProxyLocal/nginx.conf`) is generated when you run `proxy-up` the first time. It is copied from nginx-example.conf. You can make edits to this file and they will not be tracked in version control.
 
-### Other nginx files
+### Other files
 
-The `nginx.proxy.confg`, `nginx.site.conf`, `nginx.local.conf` are all in version control at this time, so any edits there would show modified unless you fork this project and commit the changes.
+The `nginx.proxy.confg`, `nginx.site.conf`, `nginx.local.conf`, `npm.script.template` are all in version control at this time, so any edits there would show modified unless you fork this project and commit the changes.
 
-Of course in that sense they are very configurable. It's good to know that in both `nginx.site.conf` and `nginx.local.conf` there are 2 variables that will get populated: PORT and SITE - and they directly relate to the sites.yml file.
+Of course in that sense they are very configurable. It's good to know that in `nginx.site.conf`, `nginx.local.conf`, and `nginx.script.template` there are 2 variables that will get populated with corresponding values: `PORT` and `SITE` - and they directly relate to the sites.yml file.
 
 ---
 
@@ -119,7 +120,7 @@ There are several commands in the commands folder.
 | proxy-up    	| - Turns on the proxy docker container - running on localhost:80\|443<br>- Creates a network bridge for DockerLocals to connect to<br>- Also, runs `./proxy-sites` with all options.        	|                                                                                                              	|
 | proxy-down  	| Turns off the proxy docker container.                                                                                                                                                      	|                                                                                                              	|
 | proxy-nginx 	| Moves nginx site configuration from sites-available to sites-enabled in the proxy container.                                                                                               	| `-p=<port>` where port is based on sites.yml                                                                 	|
-| proxy-ssh   	| SSH inside of your proxy container. Useful for troubleshooting `/etc/nginx` confs.                                                                                                         	| `-c="<CMD>"` execute a command in proxy container.                                                            |
+| proxy-ssh   	| SSH inside of your proxy container. Useful for troubleshooting `/etc/nginx` confs.                                                                                                         	| `-c="<CMD>"`(optional) - execute a command in proxy container. Use no switch to stay ssh'd                    |
 | proxy-sites 	| Generates site-related config for:<br><br>- local dns config in `/etc/hosts`<br>- nginx confs & npm-scripts in `nginx-sites` and `npm-scripts`<br>- ssl certs in `ssl-certs`                | `-h` for help<br>`-s` for ssl cert generation<br>`-g` for hosts generation<br>`-n` for nginx conf generation 	|
 | proxy-enabled | Lists all the sites that are in `/etc/nginx/sites-enabled/` inside the proxy container. Useful for debugging.                                                                               |                                                                                                               |
 
