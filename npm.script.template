@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+### Move this file to same level as your package.json
+### Update the PROXY_COMMAND_DIR to reflect your ProxyLocal installation path
+### Update your package.json to include in scripts: "proxy": "./proxy-up && <rest-of-your-commands>"
+
+ORIGINAL_DIR=$(pwd)
+PROXY_COMMAND_DIR="../../ProxyLocal/commands"
+
+# See if we are in the right place
+
+#  If path exists
+if [ -d "$PROXY_COMMAND_DIR" ]; then
+  # If path is a directory
+  if [ -d "$PROXY_COMMAND_DIR" ]; then
+    # If path is a directory
+    cd "$PROXY_COMMAND_DIR"
+  fi
+else
+  # If path is not a directory
+  printf "ProxyLocal/commands was not found at ../../ProxyLocal/commands\n"
+fi
+
+# Detect if ProxyLocal is running
+if [ -z "$(docker ps -q -f name=proxylocal_proxy_1)" ]; then
+  printf "ProxyLocal is not running\n"
+  ./proxy-up
+else
+  printf "ProxyLocal is running\n"
+fi
+
+# Run Proxy Nginx to "enable" this site in ProxyLocal's nginx/sites-enabled
+if [ -f  "proxy-nginx" ]; then
+
+	./proxy-nginx -p=PORT
+
+	printf "If successful, site running at: \n\n"
+  echo  "👉 SITE" | sed -e "s/.*/"$'\e[32m'"&"$'\e[m'"/"
+  printf "\n"
+
+fi
+
+cd $ORIGINAL_DIR

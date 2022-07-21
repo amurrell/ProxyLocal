@@ -1,3 +1,14 @@
 #!/usr/bin/env bash
 
+SSH_COMMAND=$(sed -e 's#.*\-c=\(.*\).*#\1#' <<< "$1$2$3$4$5$6$7$8$9")
+
+if [ ! -z "$SSH_COMMAND" ]; then
+    printf "Running command: $SSH_COMMAND\n"
+    
+    SSH_COMMAND=$(sed -e 's#.*\-c=\(.*\).*#\1#' <<< "$1") # this one is special, bc command might have dashes
+    sudo docker exec -t -i proxylocal_proxy_1 /bin/bash -i -c "${SSH_COMMAND}"
+    
+    exit 1
+fi
+
 sudo docker exec -t -i proxylocal_proxy_1 /bin/bash

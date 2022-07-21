@@ -38,32 +38,36 @@ cp sites-example.yml sites.yml
   - Once you do those steps, it can stay running - until you decide to turn off your computer or restart, or `./proxy-down`. 
   - Note that if you proxy-up *without doing the `proxy-nginx -p=<port>`* for your project it won't know that you want to work on that site (port) so it won't be "on" until you run it.
 
-🧠 If you are using [**DockerLocal**](https://github.com/amurrell/DockerLocal) to run your projects at `localhost:<port>`, ProxyLocal will automatically be booted up for you and/or enabled when you `./site-up` in that project! It's much more convenient, especially for projects you will use often.
+🧠 You can automate the proxy-up and proxy-nginx scripts by either:
+
+- [Setup your NPM script](#npm-scripts) - ProxyLocal generates an npm script for you that you can copy to your project and adjust your package.json scripts to include an npm run proxy.
+- Or, use [**DockerLocal**](https://github.com/amurrell/DockerLocal) to run your projects at `localhost:<port>`, ProxyLocal will automatically be booted up for you and/or enabled when you `./site-up` in that project! It's much more convenient, especially for projects you will use often.
 
 ---
 
-## Using with DockerLocal
+## NPM-Scripts
 
-If you plan to use or are already using [**DockerLocal**](https://github.com/amurrell/DockerLocal), you can install ProxyLocal so that it will automatically come up when you boot up your DockerLocal projects. The only real important thing to do is install ProxyLocal and your DockerLocals in the correct locations.
+For each of your **local** sites (sites running on localhost:port already), ProxyLocal generates useful bash scripts to help automate `./proxy-up` and `./proxy-nginx -p=<port>`. These are located in `ProxyLocal/npm-scripts` since you'll probably use them with NPM.
 
-1. Simply install ProxyLocal once, at the SAME root level as all other DockerLocal Projects.
+
+💡 You copy the script for your site, adjust your package.json, and then you can `npm run proxy` to work on it.
+
+1. copy the script to same level as package.json in your project. You can rename it something simple like `proxy-up`.
 
     ```
-    Install Location Example:
-
-    - ProxyLocal
-    - YourSite
-        - DockerLocal
-        - html/index.php
-        - conf
-    - AnotherProject
-        - DockerLocal
-        - html/index.php
+    cp ProxyLocal/npm-scripts/npm.proxy-up.local.yoursite.com.sh ~/<your-project-path>/proxy-up.sh
     ```
 
-2. [Customize your sites.yml](#customize) to add your sites port and desired urls.
+2. Adjust the script to reflect correct path for `PROXY_COMMANDS_DIR`. The default is `../../ProxyLocal/commands`
 
-3. You will need to `./proxy-u`p and `./proxy-nginx -p=<port>` for your project after making edits to the `sites.yml`. From then on your proxy will load for you when you `./site-up`.
+3. Add to your package.json scripts:
+
+    ```
+    "scripts": {
+        "proxy": "./proxy-up && <your commands>",
+        "dev": "<your commands>"
+    }
+    ```
 
 ---
 
@@ -115,5 +119,34 @@ There are several commands in the commands folder.
 | proxy-up    	| - Turns on the proxy docker container - running on localhost:80\|443<br>- Creates a network bridge for DockerLocals to connect to<br>- Also, runs `./proxy-sites` with all options.        	|                                                                                                              	|
 | proxy-down  	| Turns off the proxy docker container.                                                                                                                                                      	|                                                                                                              	|
 | proxy-nginx 	| Moves nginx site configuration from sites-available to sites-enabled in the proxy container.                                                                                               	| `-p=<port>` where port is based on sites.yml                                                                 	|
-| proxy-ssh   	| SSH inside of your proxy container. Useful for troubleshooting `/etc/nginx` confs.                                                                                                         	|                                                                                                              	|
-| proxy-sites 	| Generates site-related config for:<br><br>- local dns config in `/etc/hosts`<br>- nginx confs in `ProxyLocal/nginx-sites`<br>- ssl certs in `ProxyLocal/ssl-certs` (these are self-signed) 	| `-h` for help<br>`-s` for ssl cert generation<br>`-g` for hosts generation<br>`-n` for nginx conf generation 	|
+| proxy-ssh   	| SSH inside of your proxy container. Useful for troubleshooting `/etc/nginx` confs.                                                                                                         	| `-c="<CMD>"` execute a command in proxy container.                                                            |
+| proxy-sites 	| Generates site-related config for:<br><br>- local dns config in `/etc/hosts`<br>- nginx confs & npm-scripts in `nginx-sites` and `npm-scripts`<br>- ssl certs in `ssl-certs`                | `-h` for help<br>`-s` for ssl cert generation<br>`-g` for hosts generation<br>`-n` for nginx conf generation 	|
+| proxy-enabled | Lists all the sites that are in `/etc/nginx/sites-enabled/` inside the proxy container. Useful for debugging.                                                                               |                                                                                                               |
+
+ℹ️ **SSL-certs** - be aware that using secure urls `https://` means you will be using self-signed SSL certificates (generated in `/ssl-certs/`) and your browser may warn you or prevent you from proceeding.
+- If you are using chrome, you can type `thisisunsafe` (not in any input or address bar, just anywhere on the page it is open) and it will allow you to proceed. This sounds crazy, but it works, regardless of the error being `NET::ERR_CERT_AUTHORITY_INVALID` or `NET::ERR_CERT_INVALID`
+
+---
+
+## Using with DockerLocal
+
+If you plan to use or are already using [**DockerLocal**](https://github.com/amurrell/DockerLocal), you can install ProxyLocal so that it will automatically come up when you boot up your DockerLocal projects. The only real important thing to do is install ProxyLocal and your DockerLocals in the correct locations.
+
+1. Simply install ProxyLocal once, at the SAME root level as all other DockerLocal Projects.
+
+    ```
+    Install Location Example:
+
+    - ProxyLocal
+    - YourSite
+        - DockerLocal
+        - html/index.php
+        - conf
+    - AnotherProject
+        - DockerLocal
+        - html/index.php
+    ```
+
+2. [Customize your sites.yml](#customize) to add your sites port and desired urls.
+
+3. You will need to `./proxy-u`p and `./proxy-nginx -p=<port>` for your project after making edits to the `sites.yml`. From then on your proxy will load for you when you `./site-up`.

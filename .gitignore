@@ -4,3 +4,5 @@ nginx.conf
 nginx-original.conf
 ssl-certs/*
 !ssl-certs/.gitkeep
+npm-scripts/*
+!npm-scripts/.gitkeep

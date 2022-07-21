@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./proxy-ssh -c="ls /etc/nginx/sites-enabled"

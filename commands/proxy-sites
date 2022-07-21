@@ -50,10 +50,20 @@ if [ "$GEN" ]; then
       rm -f $NGINX_FILE
       touch $NGINX_FILE
       CONF_FILE='../nginx.site.conf'
+      NPM_FILE='../npm.script.template'
 
       # If the site domain starts with local, use local conf instead of site conf
       if [[ ${SITES[$i]} == "local"* ]]; then
         CONF_FILE='../nginx.local.conf'
+
+        # Also, generate a npm script
+        NPM_SCRIPT="../npm-scripts/npm.proxy-up.${SITES[$i]}.sh"
+        cat "${NPM_FILE}" > $NPM_SCRIPT
+        chmod +x $NPM_SCRIPT
+
+        sed -i'.bak' "s/SITE/${SITES[$i]}/g;" $NPM_SCRIPT
+        sed -i'.bak' "s/PORT/$i/g;" $NPM_SCRIPT
+        rm "${NPM_SCRIPT}.bak"
       fi
 
       cat "${CONF_FILE}" > $NGINX_FILE
