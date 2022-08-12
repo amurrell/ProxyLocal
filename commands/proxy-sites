@@ -82,10 +82,23 @@ if [ "$SSL" ]; then
     for i in "${!SITES[@]}"
     do
       [ $i -eq 80 ] && continue
-      
+
       # Now create ssl certs for each site
-      openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365 -nodes -subj "/CN=${SITES[$i]}" 2>/dev/null
-      
+      openssl req -x509 -keyout key.pem -out cert.pem -sha256 \
+        -days 365 -nodes \
+        -newkey rsa:2048 \
+        -subj "/CN=${SITES[$i]}" \
+        -extensions EXT \
+        -config <(\
+          printf "[dn]\nCN=${SITES[$i]}\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:${SITES[$i]}\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth") \
+        2>/dev/null
+
+      # check exit code
+      if [ $? -ne 0 ]; then
+        echo "❌ Error generating ssl certs for ${SITES[$i]}"
+        exit 1
+      fi
+
       # If key file exists, change the name of it.
       if [ -f key.pem ]; then
         mv key.pem "../ssl-certs/${SITES[$i]}-key.pem"
