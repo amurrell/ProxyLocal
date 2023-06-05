@@ -39,4 +39,4 @@ if [ "$UP" = 0 ]; then
 fi
 
 printf "${NGINX_COMMAND}\n"
-sudo docker exec proxylocal_proxy_1 bash -c "${NGINX_COMMAND} && service nginx reload"
+docker exec proxylocal-proxy-1 bash -c "${NGINX_COMMAND} && service nginx reload"

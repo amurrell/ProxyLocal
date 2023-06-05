@@ -22,7 +22,7 @@ else
 fi
 
 # Detect if ProxyLocal is running
-if [ -z "$(docker ps -q -f name=proxylocal_proxy_1)" ]; then
+if [ -z "$(docker ps -q -f name=proxylocal-proxy-1)" ]; then
   printf "ProxyLocal is not running\n"
   ./proxy-up
 else

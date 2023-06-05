@@ -13,6 +13,6 @@ fi
 sudo ./proxy-sites -h
 ./proxy-sites -s
 
-sudo docker-compose -p proxylocal down;
-sudo docker-compose build;
-sudo docker-compose -p proxylocal up -d;
+docker-compose -p proxylocal down;
+docker-compose build;
+docker-compose -p proxylocal up -d;
